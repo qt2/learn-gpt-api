@@ -80,11 +80,12 @@ export function Chat() {
   return (
     <div className="h-screen p-4 md:p-8 flex justify-center items-stretch">
       <main className="w-full sm:max-w-screen-sm flex flex-col items-stretch">
-        <div className="grow overflow-y-auto">
+        <div className="grow overflow-y-auto flex flex-col">
           {messages.map((msg, i) => (
             <Item msg={msg} key={i} />
           ))}
-          <div ref={chatBottom} />
+          <div className="grow" />
+          <div ref={chatBottom} className="" />
         </div>
         <form onSubmit={send} className="form-control mt-4">
           <div className="input-group">

@@ -10,6 +10,15 @@ module.exports = {
       fontFamily: {
         emoji: "'Noto Emoji'",
       },
+      height: {
+        screen: ["100vh", "100dvh"],
+      },
+      minHeight: {
+        screen: ["100vh", "100dvh"],
+      },
+      maxHeight: {
+        screen: ["100vh", "100dvh"],
+      },
     },
   },
   plugins: [require("daisyui")],
