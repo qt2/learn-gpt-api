@@ -1,0 +1,29 @@
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: [Build]
+    types: [completed]
+  workflow_dispatch:
+
+env:
+  NAME: emotalk
+  IMAGE: ${{ secrets.ECR_REGISTRY }}/emotalk:main
+
+permissions:
+  contents: read
+
+jobs:
+  deploy-container:
+    if: |
+      ${{ github.event.workflow_run.conclusion == '' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup ssh
+        run: |
+          mkdir -p ~/.ssh && eval `ssh-agent -s` && ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}"
+          ssh-keyscan -p 22 ${{ secrets.SSH_ADDRESS }} >> ~/.ssh/known_hosts
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/dokku && chmod 600 ~/.ssh/dokku
+      - name: Redeploy image
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_ADDRESS }} -i ~/.ssh/dokku "docker pull ${{ env.IMAGE }} && docker image prune -f && dokku ps:rebuild ${{ env.NAME }}"
