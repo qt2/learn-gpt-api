@@ -3,9 +3,6 @@
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import { IoSend } from "react-icons/io5";
 import axios from "axios";
-import { Noto_Emoji } from "next/font/google";
-
-const notoEmoji = Noto_Emoji({ weight: "variable", subsets: ["emoji"] });
 
 async function talk(message: string): Promise<string | null> {
   try {
@@ -84,38 +81,9 @@ export function Chat() {
     <div className="h-screen p-4 md:p-8 flex justify-center items-stretch">
       <main className="w-full sm:max-w-screen-sm flex flex-col items-stretch">
         <div className="grow overflow-y-auto">
-          {messages.map((msg, i) => {
-            if (msg.emoji) {
-              return (
-                <div
-                  key={i}
-                  className={`mt-4 mb-6 text-8xl ${notoEmoji.className}`}
-                >
-                  {msg.content}
-                </div>
-              );
-            }
-            return (
-              <div
-                key={i}
-                className={`chat ${msg.right ? "chat-end" : "chat-start"}`}
-              >
-                <div
-                  className={`chat-bubble ${
-                    msg.right && "chat-bubble-primary"
-                  }`}
-                >
-                  <span
-                    className={`${msg.loading && "animate-pulse"} ${
-                      msg.emoji && `my-4 text-6xl ${notoEmoji.className}`
-                    }`}
-                  >
-                    {msg.content}
-                  </span>
-                </div>
-              </div>
-            );
-          })}
+          {messages.map((msg, i) => (
+            <Item msg={msg} key={i} />
+          ))}
           <div ref={chatBottom} />
         </div>
         <form onSubmit={send} className="form-control mt-4">
@@ -139,6 +107,25 @@ export function Chat() {
           </div>
         </form>
       </main>
+    </div>
+  );
+}
+
+function Item({ msg }: { msg: Message }) {
+  if (msg.emoji) {
+    return (
+      <div className={`mt-4 mb-6 text-8xl font-emoji`}>
+        {Array.from(msg.content)[0]}
+      </div>
+    );
+  }
+  return (
+    <div className={`chat ${msg.right ? "chat-end" : "chat-start"}`}>
+      <div className={`chat-bubble ${msg.right && "chat-bubble-primary"}`}>
+        <span className={`${msg.loading && "animate-pulse"}`}>
+          {msg.content}
+        </span>
+      </div>
     </div>
   );
 }
