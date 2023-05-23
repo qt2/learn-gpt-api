@@ -9,7 +9,7 @@ const notoEmoji = Noto_Emoji({ weight: "variable", subsets: ["emoji"] });
 
 async function talk(message: string): Promise<string | null> {
   try {
-    let res = await axios.post("http://localhost:5000/talk", { message });
+    let res = await axios.post("https://emotalk.d.qrtz.it/talk", { message });
     return res.data.message;
   } catch (error) {
     return null;

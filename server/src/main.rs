@@ -9,6 +9,8 @@ use anyhow::Result;
 async fn main() -> Result<()> {
     dotenvy::dotenv().ok();
 
+    std::env::var("OPENAI_API_KEY").expect("OPENAI_API_KEY is undefined!");
+
     let host = std::env::var("HOST").unwrap_or("127.0.0.1".into());
     let port = std::env::var("PORT").unwrap_or("5000".into());
     let addr: SocketAddr = format!("{}:{}", host, port)

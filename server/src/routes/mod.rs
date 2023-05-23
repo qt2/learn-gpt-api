@@ -36,10 +36,11 @@ async fn handle_talk(Json(req): Json<TalkRequest>) -> APIResult<Json<TalkRespons
         return Err(APIError::InvalidArgument);
     }
 
-    println!("access");
-
     match gpt::talk(&message).await {
         Ok(message) => Ok(Json(TalkResponse { message })),
-        Err(_) => Err(APIError::InternalError),
+        Err(error) => {
+            eprintln!("{:#?}", error);
+            Err(APIError::InternalError)
+        }
     }
 }
